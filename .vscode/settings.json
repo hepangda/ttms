@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "ttms_srv.h": "c",
+        "ttms_global.h": "c",
+        "ttms_datastruct.h": "c"
+    }
+}

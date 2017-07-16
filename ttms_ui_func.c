@@ -59,7 +59,7 @@ int ui_pager_maxpage(dstruct_linklist list) {
 }
 
 dstruct_linklist_link
-    ui_pager(dstruct_linklist list, int pages) {
+ui_pager(dstruct_linklist list, int pages) {
     dstruct_linklist_link plink = list.dll_phead->next,
         ret = plink;
 
