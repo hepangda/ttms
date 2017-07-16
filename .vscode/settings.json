@@ -2,6 +2,10 @@
     "files.associations": {
         "ttms_srv.h": "c",
         "ttms_global.h": "c",
-        "ttms_datastruct.h": "c"
+        "ttms_datastruct.h": "c",
+        "ttms_ui.h": "c",
+        "ttms_tty.h": "c",
+        "ttms_stddef.h": "c",
+        "unistd.h": "c"
     }
 }
