@@ -1,11 +1,12 @@
 {
     "files.associations": {
-        "ttms_srv.h": "c",
-        "ttms_global.h": "c",
-        "ttms_datastruct.h": "c",
+        "typeinfo": "c",
+        "array": "cpp",
+        "string_view": "cpp",
+        "atomic": "cpp",
         "ttms_ui.h": "c",
-        "ttms_tty.h": "c",
-        "ttms_stddef.h": "c",
-        "unistd.h": "c"
+        "chrono": "c",
+        "limits": "c",
+        "tty.h": "c"
     }
 }

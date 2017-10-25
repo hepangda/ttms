@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/tty.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 
@@ -51,7 +51,7 @@ int ui_draw_studio(int select, int pages) {
     ui_draw_highlight(22, 8, "Page: %d", pages);
 
 
-    dstruct_linklist_link first = ui_pager(g_studio, pages);
+    link_t first = ui_pager(g_studio, pages);
     for (int i = 0; i < UI_ITEM_PERPAGE && first != NULL; i++, first = first->next) {
         studio_t *this = (studio_t *)first->data;
         ui_draw(6 + i, 8, chart_list_format, this->id, this->name, this->rows, this->cols, this->seats);
@@ -138,7 +138,7 @@ int ui_draw_studio_update() {
     int id = -1;
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_studio_id(id);
+    link_t ret = srv_find_studio_id(id);
 
     if (ret == NULL) {
         ui_clearlines(23, 28);
@@ -179,14 +179,14 @@ int ui_draw_studio_delete() {
     int id = -1;
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_studio_id(id);
+    link_t ret = srv_find_studio_id(id);
     ui_clearlines(23, 28);
 
     if (ret == NULL) {
         ui_draw_highlight(23, 8, "Error ID! Delete Failed.");
         return -1;
     } else {
-        g_studio.delete(g_studio.this, (void *)&id, srv_studio_equid);
+        ll_delete(g_studio, id, srv_studio_equid);
         srv_seat_studiodel(id);
         ui_draw_highlight(23, 8, "Delete Succeed!");
         return RET_SUCCEED;
@@ -209,7 +209,7 @@ int ui_draw_studio_add() {
     };
     ui_clearlines(23, 28);
     char input[200];
-    studio_t *last = (studio_t *)g_studio.dll_pend->data;
+    studio_t *last = (studio_t *)g_studio.pend->data;
 
     int id;
     if (last == NULL) {

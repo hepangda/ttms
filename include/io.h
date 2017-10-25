@@ -18,22 +18,14 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/global.h"
-#include"include/ui.h"
-#include"include/io.h"
+#ifndef _TTMS_HEADER_IO
+#define _TTMS_HEADER_IO
 
-int WATCHDOG = 1;
-extern int (*next_ui)();
+#include"linklist.h"
 
-int main(int argc, char *argv[]) {
-    global_initilize();
-    next_ui = ui_login;
-    // strcpy(this_user.username, "admin");
-    // strcpy(this_user.passwd, "admin");
-    // this_user.type=USER_TYPE_ADMIN;
-    while (WATCHDOG) {
-        next_ui();
-    }
-    global_exit();
-    return 0;
-}
+int io_read(const char *filename, const int dsize, linklist_t *store);
+int io_write(const char *filename, const int dsize, linklist_t *ll);
+int io_write_all();
+int io_read_all();
+
+#endif  //_TTMS_HEADER_IO

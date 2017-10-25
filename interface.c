@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,26 +18,5 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_io.h"
-#include"include/ttms_global.h"
-#include<stdlib.h>
-user_t this_user;
+#include"include/interface.h"
 
-void global_initilize() {
-    system("resize -s 29 119");
-    ui_initilize();
-    g_user.dll_init(g_user.this);
-    g_studio.dll_init(g_studio.this);
-    g_seat.dll_init(g_seat.this);
-    g_play.dll_init(g_play.this);
-    g_schedule.dll_init(g_schedule.this);
-    g_ticket.dll_init(g_ticket.this);
-    g_sale.dll_init(g_sale.this);
-    g_sale_analysis.dll_init(g_sale_analysis.this);
-    io_read_all();
-}
-
-void global_exit() {
-    io_write_all();
-}

@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_datastruct.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_stddef.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_ui.h"
+#include"include/linklist.h"
+#include"include/frame.h"
+#include"include/define.h"
+#include"include/tty.h"
+#include"include/ui.h"
 #include<sys/ioctl.h>
 #include<unistd.h>
 #include<string.h>
@@ -38,8 +38,8 @@ int ui_getstring(char *dest) {
     return RET_SUCCEED;
 }
 
-int ui_pager_maxpage(dstruct_linklist list) {
-    dstruct_linklist_link plink = list.dll_phead->next;
+int ui_pager_maxpage(linklist_t list) {
+    link_t plink = list.phead->next;
 
     int end = 0, i, j;
     for (i = 0; ; i++) {
@@ -58,9 +58,8 @@ int ui_pager_maxpage(dstruct_linklist list) {
     return i;
 }
 
-dstruct_linklist_link
-ui_pager(dstruct_linklist list, int pages) {
-    dstruct_linklist_link plink = list.dll_phead->next,
+link_t ui_pager(linklist_t list, int pages) {
+    link_t plink = list.phead->next,
         ret = plink;
 
     int end = 0;
@@ -121,3 +120,36 @@ int ui_powerfailed(int (*last_ui)()) {
     ui_request("\033[47;31mYou don\'t have power to do this! Press any key to continue..\033[0m");
     next_ui = last_ui;
 }
+
+// static const char *SEPLINE = "=============================================================================================================";
+// #include<stdarg.h>
+// #define frame_show(text) fprintf(stderr, text)
+
+// int frame_put(int row, int col, const char *format, ...) {
+//     va_list vl;
+//     va_start(vl, format);
+//     int ret = vfprintf(stderr, format, vl);
+//     va_end(vl);
+//     return ret;
+// }
+
+
+// int frame_puthl(int row, int col, const char *format, ...) {
+//     frame_show("\033[1m");
+//     va_list vl;
+//     va_start(vl, format);
+//     int ret = vfprintf(stderr, format, vl);
+//     va_end(vl);
+//     frame_show("\033[0m");
+//     return ret;
+// }
+
+// int frame_putit(int row, int col, const char *format, ...) {
+//     frame_show("\033[1m");
+//     va_list vl;
+//     va_start(vl, format);
+//     int ret = vfprintf(stderr, format, vl);
+//     va_end(vl);
+//     frame_show("\033[0m");
+//     return ret;
+// }

@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_global.h"
-#include"include/ttms_ui.h"
-#include"include/ttms_srv.h"
+#include"include/global.h"
+#include"include/ui.h"
+#include"include/service.h"
 #include<string.h>
 #include<stdlib.h>
 #include<time.h>
 
 static int srv_sale_build_schedule_cmp(char *str, schedule_t *this) {
     int play = this->play_id;
-    dstruct_linklist_link p = srv_find_play_id(play);
+    link_t p = srv_find_play_id(play);
     if (p == NULL) {
         return -1;
     }
@@ -36,7 +36,7 @@ static int srv_sale_build_schedule_cmp(char *str, schedule_t *this) {
 }
 
 static int srv_sale_build_ticket_cmp(int id, ticket_t *this) {
-    dstruct_linklist_link p = srv_find_schedule_id(this->schedule_id);
+    link_t p = srv_find_schedule_id(this->schedule_id);
     schedule_t *hah = (schedule_t *)p->data;
     if (hah == NULL) {
         return 0;
@@ -51,7 +51,7 @@ int srv_user_login(user_t loginmsg) {
 }
 
 int srv_user_check(user_t *loginmsg) {
-    dstruct_linklist_iter(g_user) {
+    LINKLIST_ITER(g_user) {
         user_t *this = (user_t *)pi->data;
         if (strcmp(this->username, loginmsg->username) == 0) {
             if (strcmp(this->passwd, loginmsg->passwd) == 0) {
@@ -66,31 +66,33 @@ int srv_user_check(user_t *loginmsg) {
 }
 
 
-int srv_sale_build_schedule(dstruct_linklist *schedules, char *question) {
-    schedules->dll_init(schedules->this);
+int srv_sale_build_schedule(linklist_t *schedules, char *question) {
+    linklist_init(schedules);
 
-    dstruct_linklist_iter(g_schedule) {
+    LINKLIST_ITER(g_schedule) {
         schedule_t *this = (schedule_t *)pi->data;
         if (srv_sale_build_schedule_cmp(question, this)) {
-            schedules->append(schedules->this, (void *)this);
+            linklist_append(schedules, (void *)this);
         }
     }
 }
 
-int srv_sale_build_ticket(dstruct_linklist *tickets, char *question) {
+int srv_sale_build_ticket(linklist_t *tickets, char *question) {
     int playid = -1;
     sscanf(question, "%d", &playid);
-    tickets->dll_init(tickets->this);
-    dstruct_linklist_iter(g_ticket) {
+
+    linklist_init(tickets);
+
+    LINKLIST_ITER(g_ticket) {
         ticket_t *this = (ticket_t *)pi->data;
         if (srv_sale_build_ticket_cmp(playid, this)) {
-            tickets->append(tickets->this, (void *)this);
+            linklist_append(tickets, (void *)this);
         }
     }
 }
 
-dstruct_linklist_link srv_find_seat_rc(int studio_id, int r, int c, int set) {
-    dstruct_linklist_iter(g_seat) {
+link_t srv_find_seat_rc(int studio_id, int r, int c, int set) {
+    LINKLIST_ITER(g_seat) {
         seat_t *this = (seat_t *)pi->data;
         if (this->roomid == studio_id && this->row == r && this->col == c) {
             this->status = set;
@@ -100,8 +102,8 @@ dstruct_linklist_link srv_find_seat_rc(int studio_id, int r, int c, int set) {
     return NULL;
 }
 
-dstruct_linklist_link srv_find_seat(int studio_id, int r, int c) {
-    dstruct_linklist_iter(g_seat) {
+link_t srv_find_seat(int studio_id, int r, int c) {
+    LINKLIST_ITER(g_seat) {
         seat_t *this = (seat_t *)pi->data;
         if (this->roomid == studio_id && this->row == r && this->col == c) {
             return pi;
@@ -110,8 +112,8 @@ dstruct_linklist_link srv_find_seat(int studio_id, int r, int c) {
     return NULL;
 }
 
-dstruct_linklist_link srv_find_studio_id(int id) {
-    dstruct_linklist_iter(g_studio) {
+link_t srv_find_studio_id(int id) {
+    LINKLIST_ITER(g_studio) {
         studio_t *this = (studio_t *)pi->data;
         if (this->id == id) {
             return pi;
@@ -120,8 +122,8 @@ dstruct_linklist_link srv_find_studio_id(int id) {
     return NULL;
 }
 
-dstruct_linklist_link srv_find_schedule_id(int id) {
-    dstruct_linklist_iter(g_schedule) {
+link_t srv_find_schedule_id(int id) {
+    LINKLIST_ITER(g_schedule) {
         schedule_t *this = (schedule_t *)pi->data;
         if (this->id == id) {
             return pi;
@@ -130,8 +132,8 @@ dstruct_linklist_link srv_find_schedule_id(int id) {
     return NULL;
 }
 
-dstruct_linklist_link srv_find_play_id(int id) {
-    dstruct_linklist_iter(g_play) {
+link_t srv_find_play_id(int id) {
+    LINKLIST_ITER(g_play) {
         play_t *this = (play_t *)pi->data;
         if (this->id == id) {
             return pi;
@@ -140,8 +142,8 @@ dstruct_linklist_link srv_find_play_id(int id) {
     return NULL;
 }
 
-dstruct_linklist_link srv_find_user_name(char *str) {
-    dstruct_linklist_iter(g_user) {
+link_t srv_find_user_name(char *str) {
+    LINKLIST_ITER(g_user) {
         user_t *this = (user_t *)pi->data;
         if (strcmp(str, this->username) == 0) {
             return pi;
@@ -169,28 +171,28 @@ int srv_play_equid(const void *va, const void *vb) {
 }
 
 int srv_studio_add(studio_t which) {
-    g_studio.append(g_studio.this, (void *)&which);
+    linklist_append(&g_studio, (void *)&which);
     return srv_seat_studioadd(which.id, which.rows, which.cols);
 }
 
 int srv_play_add(play_t which) {
-    g_play.append(g_play.this, (void *)&which);
+    linklist_append(&g_play, (void *)&which);
     return 0;
 }
 
 int srv_user_add(user_t which) {
-    g_user.append(g_user.this, (void *)&which);
+    linklist_append(&g_user, (void *)&which);
     return 0;
 }
 
 int srv_seat_add(seat_t which) {
-    g_seat.append(g_seat.this, (void *)&which);
+    linklist_append(&g_seat, (void *)&which);
     return 0;
 }
 
 int srv_build_seatarray(int roomid, int row, int col, int dest[row][col]) {
     memset(dest, 0, sizeof(int) * row * col);
-    dstruct_linklist_iter(g_seat) {
+    LINKLIST_ITER(g_seat) {
         seat_t *this = (seat_t *)pi->data;
         if (this->roomid == roomid) {
             dest[this->row][this->col] = this->status;
@@ -208,7 +210,7 @@ int srv_seat_studioadd(int studio_id, int row, int col) {
         for (int j = 1; j <= col; j++) {
             this.col = j;
             this.row = i;
-            g_seat.append(g_seat.this, (void *)&this);
+            linklist_append(&g_seat, (void *)&this);
             this.id++;
         }
     }
@@ -224,7 +226,7 @@ int srv_seat_equroomid(const void *va, const void *vb) {
 int srv_seat_studiodel(int studio_id) {
     seat_t c;
     c.roomid = studio_id;
-    g_seat.delete(g_seat.this, (void *)&c, srv_seat_equroomid);
+    linklist_delete(&g_seat, (void *)&c, srv_seat_equroomid);
 }
 
 int srv_schedule_equid(const void *va, const void *vb) {
@@ -234,7 +236,7 @@ int srv_schedule_equid(const void *va, const void *vb) {
 }
 
 int srv_schedule_add(schedule_t which) {
-    g_schedule.append(g_schedule.this, (void *)&which);
+    linklist_append(&g_schedule, (void *)&which);
     return srv_ticket_scheduleadd(which);
 }
 
@@ -251,7 +253,7 @@ int srv_ticket_scheduleadd(schedule_t which) {
         for (int j = 1; j <= stu->cols; j++) {
             this.col = j;
             this.row = i;
-            g_ticket.append(g_ticket.this, (void *)&this);
+            linklist_append(&g_ticket, (void *)&this);
             this.id++;
         }
     }
@@ -266,11 +268,11 @@ int srv_ticket_scheduleid(const void *va, const void *vb) {
 int srv_ticket_scheduledel(int schedule_id) {
     ticket_t c;
     c.schedule_id = schedule_id;
-    g_ticket.delete(g_ticket.this, (void *)&c, srv_ticket_scheduleid);
+    linklist_delete(&g_ticket, (void *)&c, srv_ticket_scheduleid);
 }
 
-dstruct_linklist_link srv_find_ticket(int schedule_id, int row, int col) {
-    dstruct_linklist_iter(g_ticket) {
+link_t srv_find_ticket(int schedule_id, int row, int col) {
+    LINKLIST_ITER(g_ticket) {
         ticket_t *this = (ticket_t *)pi->data;
         if (this->schedule_id == schedule_id && this->row == row && this->col == col) {
             return pi;
@@ -282,7 +284,7 @@ dstruct_linklist_link srv_find_ticket(int schedule_id, int row, int col) {
 
 int srv_return_ticket(ticket_t *which) {
     sale_t record;
-    sale_t *IDFINDER = (sale_t *)g_sale.dll_pend->data;
+    sale_t *IDFINDER = (sale_t *)g_sale.pend->data;
     if (IDFINDER == NULL) {
         record.id = 1;
     } else {
@@ -297,13 +299,14 @@ int srv_return_ticket(ticket_t *which) {
     record.value = which->price;
     record.type = SALE_RETURN;
     which->status = 0;
-    g_sale.append(g_sale.this, (void *)&record);
+    linklist_append(&g_sale, (void *)&record);
+
     return 0;
 }
 
 int srv_sale_ticket(ticket_t *which) {
     sale_t record;
-    sale_t *IDFINDER = (sale_t *)g_sale.dll_pend->data;
+    sale_t *IDFINDER = (sale_t *)g_sale.pend->data;
     if (IDFINDER == NULL) {
         record.id = 1;
     } else {
@@ -318,7 +321,7 @@ int srv_sale_ticket(ticket_t *which) {
     record.value = which->price;
     record.type = SALE_SELL;
     which->status = 1;
-    g_sale.append(g_sale.this, (void *)&record);
+    ll_append(g_sale, record);
     return 0;
 }
 
@@ -332,28 +335,30 @@ static int srv_sort_helper(const void *a, const void *b) {
 int srv_sort_saleanalysis() {
     sale_analysis_t SORT[1000];
     int i = 0;
-    dstruct_linklist_iter(g_sale_analysis) {
+    LINKLIST_ITER(g_sale_analysis) {
         sale_analysis_t *this = (sale_analysis_t *)pi->data;
         SORT[i++] = *this;
     }
     qsort(SORT, i, sizeof(sale_analysis_t), srv_sort_helper);
-    g_sale_analysis.dll_init(g_sale_analysis.this);
+    ll_init(g_sale_analysis);
+
     for (int j = 0; j < i; j++) {
-        g_sale_analysis.append(g_sale_analysis.this, (void *)&SORT[j]);
+        ll_append(g_sale_analysis, SORT[j]);
     }
 }
 
 
 int srv_build_saleanalysis() {
-    g_sale_analysis.dll_init(g_sale_analysis.this);
+    ll_init(g_sale_analysis);
+
     int id = 0;
-    dstruct_linklist_iter(g_play) {
+    LINKLIST_ITER(g_play) {
         play_t *this = (play_t *)pi->data;
         sale_analysis_t thisana;
         thisana.id = id++;
         thisana.play = *this;
         long cnt = 0;
-        dstruct_linklist_iter(g_ticket) {
+        LINKLIST_ITER(g_ticket) {
             ticket_t *tt = (ticket_t *)pi->data;
             schedule_t *tsc = (schedule_t *)srv_find_schedule_id(tt->schedule_id)->data;
             if (tsc->play_id == this->id && tt->status == 1) {
@@ -362,7 +367,7 @@ int srv_build_saleanalysis() {
         }
         thisana.totaltickets = cnt;
         thisana.sales = cnt * this->price;
-        g_sale_analysis.append(g_sale_analysis.this, (void *)&thisana);
+        ll_append(g_sale_analysis, thisana);
     }
     return srv_sort_saleanalysis();
 }
@@ -422,7 +427,7 @@ int srv_indate(date_t a, date_t b, date_t c) {
 
 int srv_saler_acc(user_t *tu, date_t begin, date_t end) {
     int ret = 0;
-    dstruct_linklist_iter(g_sale) {
+    LINKLIST_ITER(g_sale) {
         sale_t *this = (sale_t *)pi->data;
         if (strcmp(this->user, tu->username) == 0 && srv_indate(begin, end, this->date) == 0) {
             if (this->type == SALE_RETURN)

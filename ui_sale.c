@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/tty.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 #include<string.h>
@@ -33,8 +33,9 @@
 
 extern int (*next_ui)();
 static int studio_id = -1;
-datastruct_create_static_linklist(schedules, schedule_t);
-datastruct_create_static_linklist(tickets, ticket_t);
+
+LINKLIST_CREATE_STATIC(schedules, schedule_t);
+LINKLIST_CREATE_STATIC(tickets, ticket_t);
 static int flag = UI_FLAG_NOTSLT;
 static const char *SEPLINE = "================================================================================================";
 static char question[200];
@@ -55,7 +56,7 @@ static int ui_draw_sale_flag(int pages) {
         ui_draw_highlight(22, 4, "Page: %d", pages);
 
 
-        dstruct_linklist_link first = ui_pager(schedules, pages);
+        link_t first = ui_pager(schedules, pages);
         tty_cursor_gotoxy(8, 4);
         for (int i = 0; i < UI_ITEM_PERPAGE && first != NULL; i++, first = first->next) {
             schedule_t *this = (schedule_t *)first->data;
@@ -77,7 +78,7 @@ static int ui_draw_sale_flag(int pages) {
                 "Col", "Status", "Ticket Price");
         ui_draw_highlight(22, 4, "Page: %d", pages);
 
-        dstruct_linklist_link first = ui_pager(tickets, pages);
+        link_t first = ui_pager(tickets, pages);
         for (int i = 0; i < UI_ITEM_PERPAGE && first != NULL; i++, first = first->next) {
             ticket_t *this = (ticket_t *)first->data;
             ui_draw(6 + i, 4, chart_list_format, this->id, this->schedule_id, this->row,
@@ -129,7 +130,7 @@ int ui_draw_sale_sale() {
     ui_draw(23, 8, "Enter the ID of Schedule");
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_schedule_id(id);
+    link_t ret = srv_find_schedule_id(id);
 
     ui_clearlines(23, 28);
 
@@ -271,7 +272,7 @@ int ui_draw_sale_ret() {
     ui_draw(23, 8, "Enter the ID of Schedule: ");
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_schedule_id(id);
+    link_t ret = srv_find_schedule_id(id);
 
     ui_clearlines(23, 28);
 

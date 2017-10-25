@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/tty.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 #include<string.h>
@@ -33,7 +33,7 @@ int ui_draw_account_changepwd() {
     char input[200], buf[200], buf2[200];
     ui_clearlines(23, 28);
 
-    dstruct_linklist_link ret = srv_find_user_name(this_user.username);
+    link_t ret = srv_find_user_name(this_user.username);
     if (ret == NULL) {
         ui_draw_highlight(23, 8, "Unexcepted Error");
         return -1;
@@ -132,7 +132,7 @@ int ui_draw_account(int select, int pages) {
     ui_draw(4, 8, chart_title_format, "User Name", "User Type");
     ui_draw_highlight(22, 8, "Page: %d", pages);
 
-    dstruct_linklist_link first = ui_pager(g_user, pages);
+    link_t first = ui_pager(g_user, pages);
     for (int i = 0; i < UI_ITEM_PERPAGE && first != NULL; i++, first = first->next) {
         user_t *this = (user_t *)first->data;
         ui_draw(6 + i, 8, chart_list_format, this->username, this->type)
@@ -222,7 +222,7 @@ int ui_draw_account_update() {
     char input[200];
     ui_getstring(input);
 
-    dstruct_linklist_link ret = srv_find_user_name(input);
+    link_t ret = srv_find_user_name(input);
 
     ui_clearlines(23, 28);
     if (ret == NULL) {
@@ -262,7 +262,7 @@ int ui_draw_account_delete() {
 
     char input[200];
     ui_getstring(input);
-    dstruct_linklist_link ret = srv_find_user_name(input);
+    link_t ret = srv_find_user_name(input);
 
     ui_clearlines(23, 28);
 
@@ -273,7 +273,7 @@ int ui_draw_account_delete() {
         ui_draw_highlight(23, 8, "There\'s no user named %s. Delete Failed.", input);
         return -1;
     } else {
-        g_studio.delete(g_user.this, (void *)input, srv_user_equname);
+        ll_deletea(g_user, input, srv_user_equname);
         ui_draw_highlight(23, 8, "Delete Succeed!");
         return 0;
     }
@@ -342,7 +342,7 @@ int ui_draw_account_find() {
 
     char input[200];
     ui_getstring(input);
-    dstruct_linklist_link ret = srv_find_user_name(input);
+    link_t ret = srv_find_user_name(input);
 
     ui_clearlines(23, 28);
 

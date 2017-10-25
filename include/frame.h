@@ -18,22 +18,22 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/global.h"
-#include"include/ui.h"
-#include"include/io.h"
+#ifndef _TTMS_UIFUNC_H
+#define _TTMS_UIFUNC_H
 
-int WATCHDOG = 1;
-extern int (*next_ui)();
+#include"linklist.h"
 
-int main(int argc, char *argv[]) {
-    global_initilize();
-    next_ui = ui_login;
-    // strcpy(this_user.username, "admin");
-    // strcpy(this_user.passwd, "admin");
-    // this_user.type=USER_TYPE_ADMIN;
-    while (WATCHDOG) {
-        next_ui();
-    }
-    global_exit();
-    return 0;
-}
+int ui_window(const char *);
+int ui_title(const char *);
+int ui_bottom(const char *);
+
+int ui_flush();
+
+int ui_request(const char *);
+int ui_getstring(char *);
+
+link_t ui_pager(linklist_t, int);
+int ui_pager_maxpage(linklist_t);
+
+int ui_powerfailed();
+#endif

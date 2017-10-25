@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/tty.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 #include<string.h>

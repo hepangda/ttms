@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/tty.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 
@@ -60,7 +60,6 @@ int ui_draw_seat(int select) {
                 ui_write("%c", ' ');
             }
         }
-
     }
 
     for (int i = 0; i < 4; i++) {
@@ -126,7 +125,7 @@ int ui_draw_seat_ask() {
     ui_getstring(input);
     sscanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_studio_id(id);
+    link_t ret = srv_find_studio_id(id);
 
     ui_clearlines(23, 28);
 
@@ -167,7 +166,7 @@ int ui_draw_seat_update() {
     ui_draw(25, 8, "Set to [1 for GOOD, 2 for Broken]:");
     ui_scanf(input, "%d", &set);
 
-    dstruct_linklist_link ret;
+    link_t ret;
     if (set != 1 && set != 2) {
         ret = NULL;
     } else {
@@ -213,7 +212,7 @@ int ui_draw_seat_delete() {
     ui_getstring(input);
     sscanf(input, "%d", &c);
 
-    dstruct_linklist_link ret = srv_find_seat_rc(studio_id, r, c, SEAT_NONE);
+    link_t ret = srv_find_seat_rc(studio_id, r, c, SEAT_NONE);
 
     ui_clearlines(23, 28);
 
@@ -245,7 +244,7 @@ int ui_draw_seat_add() {
     ui_clearlines(23, 28);
 
     char input[200];
-    seat_t *IDFINDER = (seat_t *)g_seat.dll_pend->data;
+    seat_t *IDFINDER = (seat_t *)g_seat.pend->data;
     seat_t newseat;
     studio_t *this = (studio_t *)((srv_find_studio_id(studio_id))->data);
     newseat.id = IDFINDER->id + 1;

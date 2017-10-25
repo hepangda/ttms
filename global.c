@@ -18,22 +18,26 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/global.h"
 #include"include/ui.h"
 #include"include/io.h"
+#include"include/global.h"
+#include<stdlib.h>
+user_t this_user;
 
-int WATCHDOG = 1;
-extern int (*next_ui)();
+static linklist_t *GLOBAL_LINKLISTS[8] = {
+    &g_user, &g_studio, &g_seat, &g_play,
+    &g_schedule, &g_ticket, &g_sale, &g_sale_analysis
+};
 
-int main(int argc, char *argv[]) {
-    global_initilize();
-    next_ui = ui_login;
-    // strcpy(this_user.username, "admin");
-    // strcpy(this_user.passwd, "admin");
-    // this_user.type=USER_TYPE_ADMIN;
-    while (WATCHDOG) {
-        next_ui();
+void global_initilize() {
+    // system("resize -s 29 119");
+    ui_initilize();
+    for (int i = 0; i < 8; i++) {
+        linklist_init(GLOBAL_LINKLISTS[i]);
     }
-    global_exit();
-    return 0;
+    io_read_all();
+}
+
+void global_exit() {
+    io_write_all();
 }

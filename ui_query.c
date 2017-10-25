@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/tty.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 #include<string.h>
@@ -54,7 +54,7 @@ int ui_draw_query(int select, int pages) {
     ui_draw_highlight(22, 4, "Page: %d", pages);
 
 
-    dstruct_linklist_link first = ui_pager(g_sale_analysis, pages);
+    link_t first = ui_pager(g_sale_analysis, pages);
 
     for (int i = 0; i < UI_ITEM_PERPAGE && first != NULL; i++, first = first->next) {
         sale_analysis_t *this = (sale_analysis_t *)first->data;
@@ -145,7 +145,7 @@ int ui_draw_query_sa() {
     ui_draw(23, 8, "Enter the username: ");
     ui_getstring(input);
 
-    dstruct_linklist_link ret = srv_find_user_name(input);
+    link_t ret = srv_find_user_name(input);
 
     ui_clearlines(23, 28);
     if (ret == NULL) {

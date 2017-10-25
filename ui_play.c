@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/tty.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 
@@ -59,7 +59,7 @@ int ui_draw_play(int select, int pages) {
 
 
 
-    dstruct_linklist_link first = ui_pager(g_play, pages);
+    link_t first = ui_pager(g_play, pages);
     for (int i = 0; i < UI_ITEM_PERPAGE && first != NULL; i++, first = first->next) {
         play_t *this = (play_t *)first->data;
         ui_draw(6 + i, 4, chart_list_format, this->id, this->name, type_str[this->type],
@@ -154,7 +154,7 @@ int ui_draw_play_update() {
     ui_draw(23, 8, "Enter the ID of Play: ");
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_play_id(id);
+    link_t ret = srv_find_play_id(id);
 
     if (ret == NULL) {
         ui_draw_highlight(23, 8, "Error ID! Update Failed.");
@@ -213,7 +213,7 @@ int ui_draw_play_delete() {
     ui_draw(23, 8, "Enter the ID of Play: ");
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_play_id(id);
+    link_t ret = srv_find_play_id(id);
 
     ui_clearlines(23, 28);
 
@@ -221,7 +221,7 @@ int ui_draw_play_delete() {
         ui_draw_highlight(23, 8, "Error ID! Delete Failed.");
         return -1;
     } else {
-        g_studio.delete(g_play.this, (void *)&id, srv_play_equid);
+        ll_delete(g_play, id, srv_play_equid);
         ui_draw_highlight(23, 8, "Delete Succeed.");
     }
     return RET_SUCCEED;
@@ -247,7 +247,7 @@ int ui_draw_play_add() {
     };
     ui_clearlines(23, 28);
 
-    play_t *idfinder = (play_t *)g_play.dll_pend->data;
+    play_t *idfinder = (play_t *)g_play.pend->data;
     play_t this;
     if (idfinder == NULL) {
         this.id = 1;

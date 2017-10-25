@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,21 +18,25 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#ifndef _TTMS_UIFUNC_H
-#define _TTMS_UIFUNC_H
-#include"ttms_datastruct.h"
+#ifndef _TTMS_GLOBAL_H
+#define _TTMS_GLOBAL_H
 
-int ui_window(const char *);
-int ui_title(const char *);
-int ui_bottom(const char *);
+#include"linklist.h"
+#include"define.h"
 
-int ui_flush();
+extern struct winsize WINSZ;
+extern linklist_t g_user;
+extern linklist_t g_studio;
+extern linklist_t g_seat;
+extern linklist_t g_play;
+extern linklist_t g_schedule;
+extern linklist_t g_ticket;
+extern linklist_t g_sale;
+extern linklist_t g_sale_analysis;
+extern int WATCHDOG;
+extern user_t this_user;
 
-int ui_request(const char *);
-int ui_getstring(char *);
+void global_initilize();
+void global_exit();
 
-dstruct_linklist_link ui_pager(dstruct_linklist, int);
-int ui_pager_maxpage(dstruct_linklist);
-
-int ui_powerfailed();
 #endif

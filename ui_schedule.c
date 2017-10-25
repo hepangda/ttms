@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
     Author: hepangda
     E-mail: pangda@xiyoulinux.org
 *************************************************************************/
-#include"include/ttms_ui.h"
-#include"include/ttms_ui_func.h"
-#include"include/ttms_global.h"
-#include"include/ttms_tty.h"
-#include"include/ttms_srv.h"
+#include"include/ui.h"
+#include"include/frame.h"
+#include"include/global.h"
+#include"include/tty.h"
+#include"include/service.h"
 #include<unistd.h>
 #include<sys/ioctl.h>
 
@@ -51,7 +51,7 @@ int ui_draw_schedule(int select, int pages) {
     ui_draw(4, 4, chart_title_format, "ID", "Play Name", "Studio ID", "Date", "Times", "Seats")
     ui_draw_highlight(22, 4, "Page: %d", pages);
 
-    dstruct_linklist_link first = ui_pager(g_schedule, pages);
+    link_t first = ui_pager(g_schedule, pages);
     for (int i = 0; i < UI_ITEM_PERPAGE && first != NULL; i++, first = first->next) {
         schedule_t *this = (schedule_t *)first->data;
         studio_t *this_studio = (studio_t *)(srv_find_studio_id(this->studio_id)->data);
@@ -139,7 +139,7 @@ int ui_draw_schedule_update() {
     ui_draw(23, 8, "Enter the ID of Schedule: ");
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_schedule_id(id);
+    link_t ret = srv_find_schedule_id(id);
 
     ui_clearlines(23, 28);
     if (ret == NULL) {
@@ -181,14 +181,14 @@ int ui_draw_schedule_delete() {
     ui_draw(23, 8, "Enter the ID of Schedule: ");
     ui_scanf(input, "%d", &id);
 
-    dstruct_linklist_link ret = srv_find_schedule_id(id);
+    link_t ret = srv_find_schedule_id(id);
 
     ui_clearlines(23, 28);
     if (ret == NULL) {
         ui_draw_highlight(23, 8, "Error ID! Delete Failed.");
         return -1;
     } else {
-        g_schedule.delete(g_schedule.this, (void *)&id, srv_schedule_equid);
+        ll_delete(g_schedule, id, srv_schedule_equid);
         srv_ticket_scheduledel(id);
         ui_draw_highlight(23, 8, "Delete Succeed.");;
     }
@@ -211,9 +211,9 @@ int ui_draw_schedule_add() {
 
     ui_clearlines(23, 28);
 
-    schedule_t *idfinder = (schedule_t *)g_schedule.dll_pend->data;
+    schedule_t *idfinder = (schedule_t *)g_schedule.pend->data;
     schedule_t this;
-    dstruct_linklist_link verify;
+    link_t verify;
     this.seat_count = 0;
 
     if (idfinder == NULL) {

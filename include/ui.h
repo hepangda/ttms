@@ -1,5 +1,5 @@
 /***********************************************************************
-    Ticket Theater Management System
+    Theater Ticket Management System
     Copyright(C) 2017 hepangda
 
     This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #ifndef _TTMS_UI_H
 #define _TTMS_UI_H
 
-#include"ttms_global.h"
+#include"global.h"
 #include<stdio.h>
 
 #define ui_write(...) fprintf(stderr, ##__VA_ARGS__)
